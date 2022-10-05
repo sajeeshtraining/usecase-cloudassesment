@@ -26,9 +26,76 @@ The flow for the Usecase 1 ( 1,2 and 3 Sub items) will be as follows.There are S
 
 Each modules are constructed with a main.tf ,variable.tf and outputs.tf which are called in the consolidated main.tf file for end to end deployment
 
-The Consolidated main.tf file will be as below
+Module 1 : Resource Group Creation
 
-# Terraform Script for deploying Azure VM along with IIS webpackage
+resource "azurerm_resource_group" "demorsg"{
+  name = var.group_name
+  location = var.location
+  tags = local.rsgtags
+}
+
+
+Module 2 : Virtual Network Creation
+
+resource "azurerm_virtual_network" "demovnet" {
+  name                = var.virtual_network_name
+  address_space       = var.virtual_address_space
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  tags = local.vnettags
+}
+
+Module 3 : Subnet Creation
+
+resource "azurerm_subnet" "demosbt" {
+  name                 = var.subnet_name
+  address_prefixes     = var.address_prefixes
+  virtual_network_name = var.virtual_network_name
+  resource_group_name  = var.resource_group_name
+}
+
+Module 4 : Security Group Creation
+
+resource "azurerm_network_security_group" "demonsg" {
+  name                = var.network_security_group
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  tags = local.sectags
+}
+
+resource "azurerm_subnet_network_security_group_association" "demosubasso" {
+
+  subnet_id                 = var.subnet_id
+  network_security_group_id = var.security_id
+}
+
+
+resource "time_sleep" "wait_seconds3" {
+  create_duration = "250s"
+}
+
+resource "azurerm_network_security_rule" "nsgrule" {
+
+  for_each                    = local.nsgrules
+  name                        = each.key
+  direction                   = each.value.direction
+  access                      = each.value.access
+  priority                    = each.value.priority
+  protocol                    = each.value.protocol
+  source_port_range           = each.value.source_port_range
+  destination_port_range      = each.value.destination_port_range
+  source_address_prefix       = each.value.source_address_prefix
+  destination_address_prefix  = each.value.destination_address_prefix
+  resource_group_name         = var.resource_group_name
+  network_security_group_name = var.network_security_group
+  depends_on                  = [time_sleep.wait_seconds3]
+}
+
+
+
+Module 5 : Virtual Machine creation
+
+# Use existing Azure Keyvault Secrets value to supply the password for VM creation and access
 data "azurerm_key_vault" "keyvault" {
 
   name                = var.keyvault_name
@@ -121,4 +188,71 @@ resource "azurerm_virtual_machine_extension" "disk-encryption" {
 }
 SETTINGS
 
+}
+
+Module 6 : Webpackage Deployment (IIS install and Configure)
+
+# Install IIS Web Services and Puch the Code
+resource "azurerm_virtual_machine_extension" "vm_extension" {
+  name                       = "iisandcodedeploy"
+  virtual_machine_id         = var.vm_id
+  publisher                  = "Microsoft.Compute"
+  type                       = "CustomScriptExtension"
+  type_handler_version       = "1.10"
+  auto_upgrade_minor_version = true
+
+  settings = <<SETTINGS
+            
+    {
+        "fileUris":["https://dmowepsta.blob.core.windows.net/data/IISandCodePush.ps1"] ,
+        "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File IISandCodePush.ps1"
+    }
+SETTINGS
+
+}
+
+The Consolidated main.tf file will be as below
+
+
+module "resource_group" {
+  source = "./modules/resource_group"
+}
+module "virtual_network" {
+  source              = "./modules/virtual_network"
+  resource_group_name = module.resource_group.rsg_name
+  location            = module.resource_group.rsg_location
+  }
+
+module "subnet" {
+
+  source               = "./modules/subnet"
+  virtual_network_name = module.virtual_network.vnet_name
+  resource_group_name  = module.resource_group.rsg_name
+}
+
+module "security_group" {
+
+  source              = "./modules/security_group"
+  resource_group_name = module.resource_group.rsg_name
+  location            = module.resource_group.rsg_location
+  subnet_id           = module.subnet.sbt_id
+  security_id         = module.security_group.sec_id
+}
+
+module "virtual_machine" {
+
+  source              = "./modules/virtual_machine"
+  resource_group_name = module.resource_group.rsg_name
+  location            = module.resource_group.rsg_location
+  subnet_id           = module.subnet.sbt_id
+  }
+
+resource "time_sleep" "wait_seconds1" {
+  create_duration = "120s"
+}
+module "app_deployment" {
+
+  source     = "./modules/app_code_deployment"
+  vm_id      = module.virtual_machine.vms_id
+  depends_on = [time_sleep.wait_seconds1]
 }

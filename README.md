@@ -197,7 +197,7 @@ SETTINGS
 
 }
 
-**Module 6 : Webpackage Deployment (IIS install and Configure)
+**Module 6 : Webpackage Deployment (IIS install and Configure)**
                         
  **Install IIS Web Services and Puch the Code**
 resource "azurerm_virtual_machine_extension" "vm_extension" {

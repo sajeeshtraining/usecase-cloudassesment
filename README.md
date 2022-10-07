@@ -256,3 +256,18 @@ module "app_deployment" {
   vm_id      = module.virtual_machine.vms_id
   depends_on = [time_sleep.wait_seconds1]
 }
+                       
+                       
+Use Case 2 : Security Compliance
+                       
+-  Using tfsec tool to scan the terraform infra code from each modules and ensure the security compliance such as password, storage account settings, network security group configuration before you start deployment.
+
+                  
+                       
+-  IIS web logs to send existing log analytics workspace.
+
+-  Allow 443 port, Source & Destinatin ANY in Network security group created as part of the use case-1. This will ensure to access the web site using secure http(s)port 443 from internet.
+                       
+-  PowerShell script to check compliance on the VM disk encryption , network security group allowed only http(s) , IIS logs redirected to Log analytics work space,Storage account versioning & logging 
+                       
+                    

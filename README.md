@@ -18,7 +18,9 @@ Solution
 
 The above usecases are achieved and will be demonstrated using Microsoft Azure ,Terraform and Azure Powershell Scripts.
 
-Usecase 1: For the 1st Usecase, Microsoft Azure has been chosen as the target cloud platform and Terraform as the Provisioning/configuration management solution.
+**Usecase 1 VM  provisioning with webserver/application deployment**
+
+For the 1st Usecase, Microsoft Azure has been chosen as the target cloud platform and Terraform as the Provisioning/configuration management solution.
 
 The flow for the Usecase 1 ( 1,2 and 3 Sub items) will be as follows.There are Six terraform modules created for provisioning Azure resources along with the Webpackage deployment inside the Azure VM
 
@@ -258,7 +260,7 @@ module "app_deployment" {
 }
                        
                        
-Use Case 2 : Security Compliance
+**Use Case 2 : Security Compliance**
                        
 -  Using tfsec tool to scan the terraform infra code from each modules and ensure the security compliance such as password, storage account settings, network security group configuration before you start deployment.
 

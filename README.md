@@ -18,7 +18,7 @@ Solution
 
 The above usecases are achieved and will be demonstrated using Microsoft Azure ,Terraform and Azure Powershell Scripts.
 
-**Usecase 1 VM  provisioning with webserver/application deployment**
+#**Usecase 1 VM  provisioning with webserver/application deployment**
 
 For the 1st Usecase, Microsoft Azure has been chosen as the target cloud platform and Terraform as the Provisioning/configuration management solution.
 
@@ -97,7 +97,7 @@ resource "azurerm_network_security_rule" "nsgrule" {
 
 Module 5 : Virtual Machine creation
 
-# Use existing Azure Keyvault Secrets value to supply the password for VM creation and access
+**# Use existing Azure Keyvault Secrets value to supply the password for VM creation and access**
 data "azurerm_key_vault" "keyvault" {
 
   name                = var.keyvault_name
@@ -109,7 +109,7 @@ data "azurerm_key_vault_secret" "mySecret" {
   key_vault_id = data.azurerm_key_vault.keyvault.id
 
 }
-# Create VM in Azure Cloud
+**# Create VM in Azure Cloud**
 resource "azurerm_windows_virtual_machine" "dmowep-win2016" {
   name                  = var.vmname1
   resource_group_name   = var.resource_group_name
@@ -154,7 +154,7 @@ resource "azurerm_network_interface" "demonic" {
 
   
 }
-# Create Public IP for the VM to access WebSite from Internet
+** Create Public IP for the VM to access WebSite from Internet**
 resource "azurerm_public_ip" "public_ip" {
   name                = var.vm_pipname
   resource_group_name = var.resource_group_name
@@ -162,7 +162,7 @@ resource "azurerm_public_ip" "public_ip" {
   allocation_method   = "Dynamic"
 }
 
-# Create Storage acccount for VM Boot Diagnostics
+ **Create Storage acccount for VM Boot Diagnostics**
 resource "azurerm_storage_account" "bootdiagsta" {
   name                     = var.storage_name
   location                 = var.location
@@ -171,7 +171,7 @@ resource "azurerm_storage_account" "bootdiagsta" {
   account_replication_type = "LRS"
 }
 
-# Set Disk Encryption for VM Disk
+**Set Disk Encryption for VM Disk**
 resource "azurerm_virtual_machine_extension" "disk-encryption" {
   name                 = "DiskEncryption"
   virtual_machine_id   = azurerm_windows_virtual_machine.dmowep-win2016.id
@@ -260,7 +260,7 @@ module "app_deployment" {
 }
                        
                        
-**Use Case 2 : Security Compliance**
+#**Use Case 2 : Security Compliance**
                        
 -  Using tfsec tool to scan the terraform infra code from each modules and ensure the security compliance such as password, storage account settings, network security group configuration before you start deployment.
 

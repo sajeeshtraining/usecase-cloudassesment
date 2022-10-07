@@ -1,12 +1,12 @@
 Introduction
 There are two usecases to be showcased for demo
 
-#Usecase -1 
+# Usecase -1 
 1. Provision a virtual machine on your preferred cloud provider (AWS, Azure, GCP)
 2. Install the components necessary to run your favourite webserver on it
 3. Write the code to push/install new application code onto the server
 
-#Usecase -2
+# Usecase -2
 
 1. Network only allows secured HTTP access from the outside.
 2. Versioning, audit trails are enabled on file/object stores
@@ -14,11 +14,11 @@ There are two usecases to be showcased for demo
 4. All data at rest for any databases/volumes are encrypted
 
 
-Solution
+# Solution
 
 The above usecases are achieved and will be demonstrated using Microsoft Azure ,Terraform and Azure Powershell Scripts.
 
-#Usecase 1 VM  provisioning with webserver/application deployment
+# Usecase 1 : VM  provisioning with webserver/application deployment
 
 For the 1st Usecase, Microsoft Azure has been chosen as the target cloud platform and Terraform as the Provisioning/configuration management solution.
 
@@ -109,7 +109,7 @@ data "azurerm_key_vault_secret" "mySecret" {
   key_vault_id = data.azurerm_key_vault.keyvault.id
 
 }
-** Create VM in Azure Cloud**
+**Create VM in Azure Cloud**
 resource "azurerm_windows_virtual_machine" "dmowep-win2016" {
   name                  = var.vmname1
   resource_group_name   = var.resource_group_name
@@ -154,7 +154,7 @@ resource "azurerm_network_interface" "demonic" {
 
   
 }
-** Create Public IP for the VM to access WebSite from Internet**
+**Create Public IP for the VM to access WebSite from Internet**
 resource "azurerm_public_ip" "public_ip" {
   name                = var.vm_pipname
   resource_group_name = var.resource_group_name
@@ -260,11 +260,9 @@ module "app_deployment" {
 }
                        
                        
-#**Use Case 2 : Security Compliance**
+# Use Case 2 : Security Compliance
                        
--  Using tfsec tool to scan the terraform infra code from each modules and ensure the security compliance such as password, storage account settings, network security group configuration before you start deployment.
-
-                  
+-  Using tfsec tool to scan the terraform infra code from each modules and ensure the security compliance such as password, storage account settings, network security group configuration before you start deployment.              
                        
 -  IIS web logs to send existing log analytics workspace.
 

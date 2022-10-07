@@ -28,7 +28,8 @@ The flow for the Usecase 1 ( 1,2 and 3 Sub items) will be as follows.There are S
 
 Each modules are constructed with a main.tf ,variable.tf and outputs.tf which are called in the consolidated main.tf file for end to end deployment
 
-Module 1 : Resource Group Creation
+**Module 1 : Resource Group Creation**
+
 
 resource "azurerm_resource_group" "demorsg"{
   name = var.group_name
@@ -37,7 +38,7 @@ resource "azurerm_resource_group" "demorsg"{
 }
 
 
-Module 2 : Virtual Network Creation
+**Module 2 : Virtual Network Creation**
 
 resource "azurerm_virtual_network" "demovnet" {
   name                = var.virtual_network_name
@@ -47,7 +48,7 @@ resource "azurerm_virtual_network" "demovnet" {
   tags = local.vnettags
 }
 
-Module 3 : Subnet Creation
+**Module 3 : Subnet Creation**
 
 resource "azurerm_subnet" "demosbt" {
   name                 = var.subnet_name
@@ -56,7 +57,7 @@ resource "azurerm_subnet" "demosbt" {
   resource_group_name  = var.resource_group_name
 }
 
-Module 4 : Security Group Creation
+**Module 4 : Security Group Creation**
 
 resource "azurerm_network_security_group" "demonsg" {
   name                = var.network_security_group
@@ -95,9 +96,10 @@ resource "azurerm_network_security_rule" "nsgrule" {
 
 
 
-Module 5 : Virtual Machine creation
+**Module 5 : Virtual Machine creation**
 
 **Use existing Azure Keyvault Secrets value to supply the password for VM creation and access**
+
 data "azurerm_key_vault" "keyvault" {
 
   name                = var.keyvault_name
@@ -109,6 +111,7 @@ data "azurerm_key_vault_secret" "mySecret" {
   key_vault_id = data.azurerm_key_vault.keyvault.id
 
 }
+
 **Create VM in Azure Cloud**
 resource "azurerm_windows_virtual_machine" "dmowep-win2016" {
   name                  = var.vmname1
@@ -154,7 +157,9 @@ resource "azurerm_network_interface" "demonic" {
 
   
 }
+
 **Create Public IP for the VM to access WebSite from Internet**
+
 resource "azurerm_public_ip" "public_ip" {
   name                = var.vm_pipname
   resource_group_name = var.resource_group_name

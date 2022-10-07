@@ -1,12 +1,12 @@
 Introduction
 There are two usecases to be showcased for demo
 
-Usecase -1 
+#Usecase -1 
 1. Provision a virtual machine on your preferred cloud provider (AWS, Azure, GCP)
 2. Install the components necessary to run your favourite webserver on it
 3. Write the code to push/install new application code onto the server
 
-Usecase -2
+#Usecase -2
 
 1. Network only allows secured HTTP access from the outside.
 2. Versioning, audit trails are enabled on file/object stores
@@ -18,7 +18,7 @@ Solution
 
 The above usecases are achieved and will be demonstrated using Microsoft Azure ,Terraform and Azure Powershell Scripts.
 
-#**Usecase 1 VM  provisioning with webserver/application deployment**
+#Usecase 1 VM  provisioning with webserver/application deployment
 
 For the 1st Usecase, Microsoft Azure has been chosen as the target cloud platform and Terraform as the Provisioning/configuration management solution.
 
@@ -97,7 +97,7 @@ resource "azurerm_network_security_rule" "nsgrule" {
 
 Module 5 : Virtual Machine creation
 
-**# Use existing Azure Keyvault Secrets value to supply the password for VM creation and access**
+**Use existing Azure Keyvault Secrets value to supply the password for VM creation and access**
 data "azurerm_key_vault" "keyvault" {
 
   name                = var.keyvault_name
@@ -109,7 +109,7 @@ data "azurerm_key_vault_secret" "mySecret" {
   key_vault_id = data.azurerm_key_vault.keyvault.id
 
 }
-**# Create VM in Azure Cloud**
+** Create VM in Azure Cloud**
 resource "azurerm_windows_virtual_machine" "dmowep-win2016" {
   name                  = var.vmname1
   resource_group_name   = var.resource_group_name
@@ -162,7 +162,7 @@ resource "azurerm_public_ip" "public_ip" {
   allocation_method   = "Dynamic"
 }
 
- **Create Storage acccount for VM Boot Diagnostics**
+**Create Storage acccount for VM Boot Diagnostics**
 resource "azurerm_storage_account" "bootdiagsta" {
   name                     = var.storage_name
   location                 = var.location
@@ -194,7 +194,7 @@ SETTINGS
 
 Module 6 : Webpackage Deployment (IIS install and Configure)
 
-# Install IIS Web Services and Puch the Code
+ **Install IIS Web Services and Puch the Code**
 resource "azurerm_virtual_machine_extension" "vm_extension" {
   name                       = "iisandcodedeploy"
   virtual_machine_id         = var.vm_id
